@@ -1,14 +1,29 @@
 package src;
 
+import java.util.HashMap;
+
 /**
  * @author Stefan Polydor &lt;spolydor@student.tgm.ac.at&gt;
  * @version 26.02.16
  */
 public class Balancer implements Runnable {
+	/**
+	 * 0 ... Weighted Distribution
+	 * 1 ... Least Connection
+	 */
 	private int balanceMethod = 0;
+	private HashMap<String, Integer> servers = new HashMap();
 
 	public void balance() {
+		switch (balanceMethod) {
+			case 0:
 
+				break;
+			case 1:
+
+				break;
+
+		}
 	}
 
 	public void setBalanceMethod(int method) {
