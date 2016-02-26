@@ -1,4 +1,4 @@
-package LB;
+package src;
 
 /**
  * @author Stefan Polydor &lt;spolydor@student.tgm.ac.at&gt;
