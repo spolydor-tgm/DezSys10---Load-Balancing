@@ -5,4 +5,5 @@ package src;
  * @version 26.02.16
  */
 public interface Calculator {
+	public double pi(int iterations);
 }
