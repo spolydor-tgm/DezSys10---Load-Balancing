@@ -15,7 +15,6 @@ public class Balancer implements Runnable {
 		balanceMethod = method;
 	}
 
-
 	/**
 	 * When an object implementing interface <code>Runnable</code> is used
 	 * to create a thread, starting the thread causes the object's
