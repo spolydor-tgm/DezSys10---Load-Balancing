@@ -14,6 +14,10 @@ public class Balancer implements Runnable {
 	private int balanceMethod = 0;
 	private HashMap<String, Integer> servers = new HashMap();
 
+	public Balancer(){
+		
+	}
+
 	public void balance() {
 		switch (balanceMethod) {
 			case 0:
