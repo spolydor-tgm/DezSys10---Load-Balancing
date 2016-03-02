@@ -3,13 +3,12 @@ package src;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Stefan Polydor &lt;spolydor@student.tgm.ac.at&gt;
@@ -21,9 +20,10 @@ public class Balancer implements Runnable {
 	 * 1 ... Least Connection
 	 */
 	private int balanceMethod = 0;
-	private Map<Socket, Integer> servers = new HashMap<Socket, Integer>();
+	private List<ServerList> servers = new ArrayList<ServerList>(); // Socket, Anz. Verbindungen
 	private ServerSocket serverSocket;
 	private boolean run = true;
+	private int anzServer = 0;
 
 	public Balancer(){
 		
@@ -38,15 +38,23 @@ public class Balancer implements Runnable {
 		}
 	}
 
-	public void balance() {
+	private void weightedDistribution() {
+
+	}
+
+	private void leastConnection() {
+
+	}
+
+	public void balance(String request) throws IOException {
 		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 		Date date = new Date();
-		if (servers.isEmpty())
+		if (servers.isEmpty()) // Checken, ob ein Server verfuegbar ist, wenn nicht, laeuft der Balancer weiter, und Anfragen nicht weitergeleitet
 			System.err.println(df.format(date) + "  : " + "Cannot Balance, No Server is connected");
-		else {
+		else { // Wenn Server verfuegbar, balancen; Verschiedene Balancemethoden
 			switch (balanceMethod) {
 				case 0:
-
+					new PrintWriter(servers.get(anzServer-1).socket.getOutputStream(), true).println();
 					break;
 				case 1:
 
@@ -83,11 +91,12 @@ public class Balancer implements Runnable {
 				BufferedReader in = new BufferedReader(
 						new InputStreamReader(clientSocket.getInputStream()));
 
-				while ((line = in.readLine()) != null) { //if
-					if (line.contains("SERVER"))
-						servers.put(clientSocket, servers.size()+1);
-					else
-						balance();
+				if ((line = in.readLine()) != null) { //if
+					if (line.contains("SERVER")) {
+						servers.add(new ServerList(clientSocket, 0));
+						anzServer+= 1;
+					} else
+						balance(line);
 					System.out.println(line);
 				}
 			}
@@ -95,6 +104,17 @@ public class Balancer implements Runnable {
 			e.printStackTrace();
 		}
 	}
+
+	private class ServerList {
+		public Socket socket;
+		public int anz;
+
+		private ServerList(Socket socket, int anz) {
+			this.socket = socket;
+			this.anz = anz;
+		}
+	}
+
 
 
 	public static void main(String[] args) {

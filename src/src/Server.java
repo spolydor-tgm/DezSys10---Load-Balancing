@@ -42,7 +42,7 @@ public class Server implements Runnable {
 			in = new BufferedReader(
 					new InputStreamReader(clientSocket.getInputStream()));
 			PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
-			pw.write("SERVER");
+			pw.println("SERVER " + name);
 		} catch (IOException e) {
 			System.err.println("Error during getting InputStreamReader");
 		}
@@ -65,7 +65,7 @@ public class Server implements Runnable {
 		String line;
 		while (run) {
 			try {
-				while ((line = this.in.readLine()) != null) {
+				if ((line = this.in.readLine()) != null) {
 					DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 					Date date = new Date();
 					System.out.println(df.format(date) + "  : " + line);
@@ -84,6 +84,7 @@ public class Server implements Runnable {
 		Server server = new Server(12345);
 		Thread t = new Thread(server);
 		t.start();
+		/*
 		System.out.println("Started");
 		try {
 			Thread.sleep(2000);
@@ -92,5 +93,6 @@ public class Server implements Runnable {
 		}
 		System.out.println("Finished");
 		server.shutDown();
+		*/
 	}
 }
