@@ -88,10 +88,18 @@ public class Balancer implements Runnable {
 						servers.put(clientSocket, servers.size()+1);
 					else
 						balance();
+					System.out.println(line);
 				}
 			}
 		}catch(IOException e){
 			e.printStackTrace();
 		}
+	}
+
+
+	public static void main(String[] args) {
+		Balancer b = new Balancer(0, 12345);
+		Thread t = new Thread(b);
+		t.run();
 	}
 }

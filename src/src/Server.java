@@ -3,6 +3,7 @@ package src;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,8 @@ public class Server implements Runnable {
 			Socket clientSocket = new Socket(host, port);
 			in = new BufferedReader(
 					new InputStreamReader(clientSocket.getInputStream()));
+			PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
+			pw.write("SERVER");
 		} catch (IOException e) {
 			System.err.println("Error during getting InputStreamReader");
 		}
@@ -78,7 +81,7 @@ public class Server implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		Server server = new Server();
+		Server server = new Server(12345);
 		Thread t = new Thread(server);
 		t.start();
 		System.out.println("Started");
@@ -88,5 +91,6 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
 		System.out.println("Finished");
+		server.shutDown();
 	}
 }
