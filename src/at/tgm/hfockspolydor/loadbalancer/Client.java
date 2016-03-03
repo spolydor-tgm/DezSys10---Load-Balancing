@@ -2,6 +2,7 @@ package at.tgm.hfockspolydor.loadbalancer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
@@ -27,7 +28,7 @@ public class Client {
                     new PrintWriter(echoSocket.getOutputStream(), true);
             DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
             Date date = new Date();
-            out.println(df.format(date) + "  : " + "CLIENT Anfr:" + anfrage);
+            out.println(df.format(date) + "  : " + "CLIENT " + InetAddress.getLocalHost() + " Anfr:" + anfrage);
             System.out.println(df.format(date) + "  : " + "CLIENT" + anfrage + " an LB Adr: " + host + ":" + port);
             /*
             BufferedReader in =
