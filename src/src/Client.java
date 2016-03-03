@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Stefan Polydor &lt;spolydor@student.tgm.ac.at&gt;
@@ -22,7 +25,10 @@ public class Client {
             Socket echoSocket = new Socket(host, port);
             PrintWriter out =
                     new PrintWriter(echoSocket.getOutputStream(), true);
-            out.println("CLIENT " + anfrage);
+            DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+            Date date = new Date();
+            out.println(df.format(date) + "  : " + "CLIENT Anfr:" + anfrage);
+            System.out.println(df.format(date) + "  : " + "CLIENT" + anfrage + " an LB Adr: " + host + ":" + port);
             /*
             BufferedReader in =
                     new BufferedReader(

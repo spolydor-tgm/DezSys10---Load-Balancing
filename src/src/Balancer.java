@@ -54,7 +54,9 @@ public class Balancer implements Runnable {
 		else { // Wenn Server verfuegbar, balancen; Verschiedene Balancemethoden
 			switch (balanceMethod) {
 				case 0:
-					new PrintWriter(servers.get(anzServer-1).socket.getOutputStream(), true).println();
+
+					new PrintWriter(servers.get(anzServer-1).socket.getOutputStream(), true).
+							println("\'" + request + ";\' \'" + df.format(date) + "  : " + servers.get(anzServer-1).sname + "\'");
 					break;
 				case 1:
 
@@ -93,7 +95,7 @@ public class Balancer implements Runnable {
 
 				if ((line = in.readLine()) != null) { //if
 					if (line.contains("SERVER")) {
-						servers.add(new ServerList(clientSocket, 0));
+						servers.add(new ServerList(clientSocket, 0, line));
 						anzServer+= 1;
 					} else
 						balance(line);
@@ -108,10 +110,12 @@ public class Balancer implements Runnable {
 	private class ServerList {
 		public Socket socket;
 		public int anz;
+		public String sname;
 
-		private ServerList(Socket socket, int anz) {
+		private ServerList(Socket socket, int anz, String sname) {
 			this.socket = socket;
 			this.anz = anz;
+			this.sname = sname.split(":")[3];
 		}
 	}
 
