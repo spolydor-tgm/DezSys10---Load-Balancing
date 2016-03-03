@@ -17,12 +17,15 @@ import java.util.Date;
 public class Server implements Runnable {
 	private static int numbersForgiven = 0;
 	private int name = incrementNumbersForgiven();
+	// Der Port fuer den Socket
 	private int port = 1234;
+    // Der Hostname fuer den Socket
 	private String host = "localhost";
 	private BufferedReader in;
 	private boolean run = true;
 	private Socket clientSocket;
 
+    // Diese Methode zaehlt hoch wie viele Server schon von dieser Einheit initialisiert wurden
 	private int incrementNumbersForgiven() {
 		Server.numbersForgiven+= 1;
 		return Server.numbersForgiven;
@@ -38,19 +41,29 @@ public class Server implements Runnable {
 		host = hostname;
 	}
 
+    /**
+     * Diese Methode ist fuer die Verbindung zum Load Balancer da.
+     * Damit der Load Balancer weiss, welche Server er zum Load Balancen hat
+     * und fuer das Empfangen der einzelnen Anfragen die vom Load Balancer weitergeleitet werden
+     */
 	public void connectToLB() {
 		try {
+            // Der Socket fuer die Verbindung
 			clientSocket = new Socket(host, port);
+            // Der Buffered Reader fuer die Anfragen vom Load Balancer
 			in = new BufferedReader(
 					new InputStreamReader(clientSocket.getInputStream()));
+            // Der PrintWriter der auf den Socket zum Load Balancer ausgelegt ist
 			PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
             pw.println("SERVER");
             String line;
             if ((line = in.readLine()) != null)
                 name = Integer.parseInt(line);
-
+            // Das Zeitformat fuer das Date damit es in der folgenden Maske angezeigt wird dd/MM/yy HH:mm:ss
 			DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+            // Das Date Objekt fuer die Feststellung des Sendezeitpunktes der Anfrage fuer den Load Balancer
 			Date date = new Date();
+            // OutputStream der die Nachricht an den Loadbalancer uebermittelt
 			pw.println(df.format(date) + "  : " + "SERVER" + name + " " + InetAddress.getLocalHost());
 		} catch (IOException e) {
 			System.err.println("Error during getting InputStreamReader");
@@ -70,6 +83,7 @@ public class Server implements Runnable {
 	 */
 	@Override
 	public void run() {
+        // Zu erst wird die Verbindung zum Server hergestellt
 		connectToLB();
 		String line;
 		while (run) {
@@ -85,6 +99,9 @@ public class Server implements Runnable {
 		}
 	}
 
+    /**
+     * Zum schliessen der Socketverbindung
+     */
 	public void shutDown() {
 		run = false;
 		try {
