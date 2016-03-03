@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @author Stefan Polydor &lt;spolydor@student.tgm.ac.at&gt; & Hagen Aad Fock &lt;hfock@student.tgm.ac.at&gt;
+ * @author Stefan Polydor &lt;spolydor@student.tgm.ac.at&gt; and Hagen Aad Fock &lt;hfock@student.tgm.ac.at&gt;
  * @version 03.03.16
  */
 public class Client {
@@ -76,7 +76,7 @@ public class Client {
     /**
      * die Main erstellt 5 Client Objekte fuer die Verbindung zum Load Balancer
      * @param args --
-     * @throws InterruptedException
+     * @throws InterruptedException --
      */
     public static void main(String[] args) throws InterruptedException {
         Client cl1 = new Client("192.168.1.27", 12345);

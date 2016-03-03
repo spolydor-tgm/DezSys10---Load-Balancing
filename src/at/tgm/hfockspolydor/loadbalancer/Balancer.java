@@ -81,7 +81,7 @@ public class Balancer implements Runnable {
 	 * Least Connection - Balancemethode
 	 * Der Server, der die wenigsten Sessions/Verbindungen aufweist,
 	 * bekommt die Request
-	 * @return
+	 * @return servernumber welcher Server die Anfrage zugewiesen bekommt
 	 */
 	private int leastConnection() {
 		int temp = 999999;
@@ -116,7 +116,7 @@ public class Balancer implements Runnable {
 	 * an keinen Server verschickt werden kann.
 	 * @param request Request Line vom Client, die dann erweitert an den
 	 *                Server gesendet wird
-	 * @throws IOException
+	 * @throws IOException --
 	 */
 	public void balance(String request) throws IOException {
 		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
@@ -218,7 +218,11 @@ public class Balancer implements Runnable {
 		}
 	}
 
-
+	/**
+	 *
+	 * @param args --
+	 * @throws InterruptedException --
+	 */
 	public static void main(String[] args) throws InterruptedException {
 		System.out.println("Weighted Distribution is enabled!");
 		Balancer b = new Balancer(0, 12345);
