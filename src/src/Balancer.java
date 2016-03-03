@@ -24,6 +24,8 @@ public class Balancer implements Runnable {
 	private ServerSocket serverSocket;
 	private boolean run = true;
 	private int anzServer = 0;
+	private int wD = 0;
+	private int actState = 0;
 
 	public Balancer(){
 		
@@ -38,29 +40,72 @@ public class Balancer implements Runnable {
 		}
 	}
 
-	private void weightedDistribution() {
+	private int weightedDistribution() {
+		if (wD < 2) { // nach shutdown, springt hier
+			actState = 1;
+			wD++;
+			return actState-1;
+		} else {
+			//if (wD == 2 && actState == 0)
+			//	actState+= 1;
 
+			actState+= 1;
+			if (actState == anzServer)
+				wD = 0;
+		}
+		if (! servers.get(actState - 1).socket.isClosed())
+			return actState-1;
+		else {
+			servers.remove(actState - 1);
+			actState-= 1;
+			anzServer-= 1;
+		}
+		if (anzServer == 0)
+			return -1;
+		return weightedDistribution();
 	}
 
-	private void leastConnection() {
-
+	private int leastConnection() {
+		int temp = 99999999;
+		int count = 1;
+		for (ServerList server : servers)
+			if (server.anz > temp) {
+				temp = count;
+				count++;
+			} else
+				count++;
+		if (! servers.get(temp-1).socket.isClosed())
+			return temp-1;
+		else {
+			servers.remove(temp-1);
+			anzServer-= 1;
+		}
+		if (anzServer == 0)
+			return -1;
+		return leastConnection();
 	}
 
 	public void balance(String request) throws IOException {
 		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 		Date date = new Date();
+		int place = 0;
 		if (servers.isEmpty()) // Checken, ob ein Server verfuegbar ist, wenn nicht, laeuft der Balancer weiter, und Anfragen nicht weitergeleitet
 			System.err.println(df.format(date) + "  : " + "Cannot Balance, No Server is connected");
 		else { // Wenn Server verfuegbar, balancen; Verschiedene Balancemethoden
 			switch (balanceMethod) {
 				case 0:
-
-					new PrintWriter(servers.get(anzServer-1).socket.getOutputStream(), true).
-							println("\'" + request + ";\' \'" + df.format(date) + "  : " + servers.get(anzServer-1).sname + "\'");
+					place = weightedDistribution();
 					break;
 				case 1:
-
+					place = leastConnection();
 					break;
+			}
+			if (place == -1)
+				System.err.println(df.format(date) + "  : " + "Cannot Balance, No Server is connected");
+			else {
+				new PrintWriter(servers.get(place).socket.getOutputStream(), true).
+						println("\'" + request + ";\' \'" + df.format(date) + "  : " + servers.get(place).sname + "\'");
+				servers.get(place).anz += 1;
 			}
 		}
 	}

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hagen on 01.03.2016.
@@ -33,6 +35,13 @@ public class BalanceServer {
     }
 
     public static void main(String[] args) {
-        BalanceServer server = new BalanceServer(9999);
+        // BalanceServer server = new BalanceServer(9999);
+        List<String> s = new ArrayList<String>();
+        s.add("1");
+        s.add("2");
+        s.add("3");
+        System.out.println(s.size());
+        s.remove(1);
+        System.out.println(s.size());
     }
 }

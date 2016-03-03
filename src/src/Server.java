@@ -20,6 +20,7 @@ public class Server implements Runnable {
 	private String host = "localhost";
 	private BufferedReader in;
 	private boolean run = true;
+	private Socket clientSocket;
 
 	private int incrementNumbersForgiven() {
 		Server.numbersForgiven+= 1;
@@ -38,7 +39,7 @@ public class Server implements Runnable {
 
 	public void connectToLB() {
 		try {
-			Socket clientSocket = new Socket(host, port);
+			clientSocket = new Socket(host, port);
 			in = new BufferedReader(
 					new InputStreamReader(clientSocket.getInputStream()));
 			PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -80,20 +81,21 @@ public class Server implements Runnable {
 
 	public void shutDown() {
 		run = false;
+		try {
+			clientSocket.close();
+		} catch (IOException e) {}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		Server server = new Server(12345);
 		Thread t = new Thread(server);
 		t.start();
-		try {
-			Thread.sleep(2045);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		Thread.sleep(2045);
 		Server server2 = new Server(12345);
 		Thread t2 = new Thread(server2);
 		t2.start();
+		Thread.sleep(18000);
+		server.shutDown();
 		/*
 		System.out.println("Started");
 		try {

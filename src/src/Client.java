@@ -57,7 +57,15 @@ public class Client {
         return Client.anfrageNr;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws InterruptedException {
+        Client cl1 = new Client("localhost", 12345);
+            Thread.sleep(2000);
+        Client cl2 = new Client("localhost", 12345);
+            Thread.sleep(2000);
         Client client = new Client("localhost", 12345);
+            Thread.sleep(4000);
+        Client client2 = new Client("localhost", 12345);
+            Thread.sleep(20000);
+        Client client3 = new Client("localhost", 12345);
     }
 }
