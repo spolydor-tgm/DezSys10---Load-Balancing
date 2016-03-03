@@ -44,6 +44,11 @@ public class Server implements Runnable {
 			in = new BufferedReader(
 					new InputStreamReader(clientSocket.getInputStream()));
 			PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
+            pw.println("SERVER");
+            String line;
+            if ((line = in.readLine()) != null)
+                name = Integer.parseInt(line);
+
 			DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 			Date date = new Date();
 			pw.println(df.format(date) + "  : " + "SERVER" + name + " " + InetAddress.getLocalHost());
@@ -89,10 +94,12 @@ public class Server implements Runnable {
 
 	public static void main(String[] args) throws InterruptedException {
 		Server server = new Server(12345);
+		server.setHost("192.168.1.27");
 		Thread t = new Thread(server);
 		t.start();
 		Thread.sleep(2045);
 		Server server2 = new Server(12345);
+		server2.setHost("192.168.1.27");
 		Thread t2 = new Thread(server2);
 		t2.start();
 	}
