@@ -109,6 +109,7 @@ public class Server implements Runnable {
 		} catch (IOException e) {}
 	}
 
+
 	public static void main(String[] args) throws InterruptedException {
 		Server server = new Server(12345);
 		server.setHost("192.168.1.27");

@@ -219,7 +219,6 @@ public class Balancer implements Runnable {
 	}
 
 
-
 	public static void main(String[] args) throws InterruptedException {
 		System.out.println("Weighted Distribution is enabled!");
 		Balancer b = new Balancer(0, 12345);
