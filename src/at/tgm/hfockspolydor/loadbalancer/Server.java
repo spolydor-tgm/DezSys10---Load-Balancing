@@ -100,7 +100,7 @@ public class Server implements Runnable {
 	}
 
     /**
-     * Zum schliessen der Socketverbindung
+     * Zum schliessen der Socketverbindung und um den Thread (die run()) Methode zu beenden
      */
 	public void shutDown() {
 		run = false;
