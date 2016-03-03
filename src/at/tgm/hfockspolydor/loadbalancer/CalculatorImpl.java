@@ -1,4 +1,4 @@
-package src;
+package at.tgm.hfockspolydor.loadbalancer;
 
 /**
  * @author Stefan Polydor &lt;spolydor@student.tgm.ac.at&gt;

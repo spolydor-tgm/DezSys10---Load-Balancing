@@ -1,4 +1,4 @@
-package src;
+package at.tgm.hfockspolydor.loadbalancer;
 
 import java.io.BufferedReader;
 import java.io.IOException;

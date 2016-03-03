@@ -1,4 +1,4 @@
-package src;
+package at.tgm.hfockspolydor.loadbalancer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -171,8 +171,10 @@ public class Balancer implements Runnable {
 		Balancer b = new Balancer(0, 12345);
 		Thread t = new Thread(b);
 		t.start();
+		/*
 		Thread.sleep(30000);
 		b.setBalanceMethod(1);
 		System.out.println("Least Connection is enabled!");
+		*/
 	}
 }
