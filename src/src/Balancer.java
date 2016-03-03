@@ -46,9 +46,6 @@ public class Balancer implements Runnable {
 			wD++;
 			return actState-1;
 		} else {
-			//if (wD == 2 && actState == 0)
-			//	actState+= 1;
-
 			actState+= 1;
 			if (actState == anzServer)
 				wD = 0;
@@ -66,18 +63,21 @@ public class Balancer implements Runnable {
 	}
 
 	private int leastConnection() {
-		int temp = 99999999;
+		int temp = 999999;
+		int temp2 = 1;
 		int count = 1;
-		for (ServerList server : servers)
-			if (server.anz > temp) {
-				temp = count;
-				count++;
+		for (ServerList server : servers) {
+			if (server.anz < temp) {
+				temp = server.anz;
+				count = temp2;
+				temp2++;
 			} else
-				count++;
-		if (! servers.get(temp-1).socket.isClosed())
-			return temp-1;
+				temp2++;
+		}
+		if (! servers.get(count-1).socket.isClosed())
+			return count-1;
 		else {
-			servers.remove(temp-1);
+			servers.remove(count-1);
 			anzServer-= 1;
 		}
 		if (anzServer == 0)
@@ -166,9 +166,13 @@ public class Balancer implements Runnable {
 
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
+		System.out.println("Weighted Distribution is enabled!");
 		Balancer b = new Balancer(0, 12345);
 		Thread t = new Thread(b);
-		t.run();
+		t.start();
+		Thread.sleep(30000);
+		b.setBalanceMethod(1);
+		System.out.println("Least Connection is enabled!");
 	}
 }

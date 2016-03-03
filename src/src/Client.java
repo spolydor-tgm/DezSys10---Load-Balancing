@@ -63,9 +63,9 @@ public class Client {
         Client cl2 = new Client("localhost", 12345);
             Thread.sleep(2000);
         Client client = new Client("localhost", 12345);
-            Thread.sleep(4000);
+            Thread.sleep(2000);
         Client client2 = new Client("localhost", 12345);
-            Thread.sleep(20000);
+            Thread.sleep(2000);
         Client client3 = new Client("localhost", 12345);
     }
 }

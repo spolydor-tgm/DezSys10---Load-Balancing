@@ -94,17 +94,5 @@ public class Server implements Runnable {
 		Server server2 = new Server(12345);
 		Thread t2 = new Thread(server2);
 		t2.start();
-		Thread.sleep(18000);
-		server.shutDown();
-		/*
-		System.out.println("Started");
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out.println("Finished");
-		server.shutDown();
-		*/
 	}
 }
