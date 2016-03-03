@@ -19,18 +19,27 @@ public class Balancer implements Runnable {
 	 * 0 ... Weighted Distribution
 	 * 1 ... Least Connection
 	 */
-	private int balanceMethod = 0;
+	private int balanceMethod = 0; // Auswahl der Balancemethode
 	private List<ServerList> servers = new ArrayList<ServerList>(); // Socket, Anz. Verbindungen
-	private ServerSocket serverSocket;
-	private boolean run = true;
-	private int anzServer = 0;
-	private int wD = 0;
-	private int actState = 0;
+	private ServerSocket serverSocket; // Serversocket fuer Balancer
+	private boolean run = true; // Stoppen des Threads
+	private int anzServer = 0; // Speichern der Anzahl der verfuegbaren Server
+	private int serverNumber = 1;
+	private int wD = 0; // temp fuer Weighted (Servergewichtung)
+	private int actState = 0; // damit gespeichert wird, welcher Server als letztes bei Weighted Distribution verwendet wurde
 
+	/**
+	 * Default Konstuktor
+	 */
 	public Balancer(){
 		
 	}
 
+	/**
+	 * Erzeugt einen Balancer, welcher dann mit .run() gestartet werden muss
+	 * @param balanceMethod 0 = Weighted Distribution, 1 = Least Connection
+	 * @param port auf dem der Balancer Laufen soll
+	 */
 	public Balancer(int balanceMethod, int port) {
 		this.balanceMethod = balanceMethod;
 		try {
@@ -40,24 +49,28 @@ public class Balancer implements Runnable {
 		}
 	}
 
+	/**
+	 * Weighted Distribution - Balancemethode
+	 * @return servernumber welcher Server die Anfrage zugewiesen bekommt
+	 */
 	private int weightedDistribution() {
-		if (wD < 2) { // nach shutdown, springt hier
+		if (wD < 2) { // der Erste Server ist doppelt gewichtet, doppelt so Leistungsstark wie die anderen
 			actState = 1;
 			wD++;
 			return actState-1;
-		} else {
+		} else { // Wenn der erste Server schon 2 erhalten hat, dann bekommen die anderen die Anfragen
 			actState+= 1;
 			if (actState == anzServer)
 				wD = 0;
 		}
-		if (! servers.get(actState - 1).socket.isClosed())
+		if (! servers.get(actState - 1).socket.isClosed()) // Pruefen, ob Connection zu Server noch open ist, wenn ja, rueckgabe Server
 			return actState-1;
-		else {
+		else { // Anfrage ignorieren, variablen setzten, wenn dies auftritt, wird spaeter nochmals die weightedDistribution aufgerufen bis ein passender Server gefunden wird,
 			servers.remove(actState - 1);
 			actState-= 1;
 			anzServer-= 1;
 		}
-		if (anzServer == 0)
+		if (anzServer == 0) // keiner da ist, dann Anfrage ignoriert
 			return -1;
 		return weightedDistribution();
 	}
@@ -140,8 +153,13 @@ public class Balancer implements Runnable {
 
 				if ((line = in.readLine()) != null) { //if
 					if (line.contains("SERVER")) {
+						new PrintWriter(clientSocket.getOutputStream(), true).
+								println(serverNumber);
+						line = null;
+						if ((line = in.readLine()) != null);
 						servers.add(new ServerList(clientSocket, 0, line));
 						anzServer+= 1;
+						serverNumber+= 1;
 					} else
 						balance(line);
 					System.out.println(line);
